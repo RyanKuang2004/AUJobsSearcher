@@ -1,0 +1,13 @@
+services:
+  scraper:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: aujobs_scraper
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    environment:
+      - RUN_ON_STARTUP=true # Uncomment to run immediately on start
+    volumes:
+      - ..:/app # Mount parent directory for development
