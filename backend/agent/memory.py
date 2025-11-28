@@ -1,31 +1,9 @@
 from deepagents import create_deep_agent
 from deepagents.backends import CompositeBackend, StateBackend
 from uuid import uuid4
+from db.conversation_database import ConversationDatabase
 
-class ConversationHistoryStore:
-    """
-    Minimal example: replace in-memory dict with Supabase queries.
-    Keys: (user_id) -> list of messages (role, content)
-    """
-    def __init__(self):
-        self._db = {}  # <- replace with Supabase DB calls
-
-    def get_history(self, user_id):
-        return self._db.get(user_id, [])
-
-    def save_history(self, user_id, messages):
-        self._db[user_id] = messages  # overwrite or append depending on design
-
-
-history_store = ConversationHistoryStore()
-
-def make_backend(runtime):
-    return CompositeBackend(
-        default=StateBackend(runtime),  # only short-term memory by default
-    )
-
-
-def run_agent_message(user_id, user_message):
+def run_agent_message(session_id, user_message):
     """
     - Loads past history for this user (from DB)
     - Starts a new thread
@@ -34,7 +12,8 @@ def run_agent_message(user_id, user_message):
     """
 
     # Load previous conversation history
-    prior_messages = history_store.get_history(user_id)
+    history_store = ConversationDatabase()
+    prior_messages = history_store.get_messages(session_id)
 
     # Create new thread ID each time (simulating "different threads")
     thread_id = str(uuid4())
@@ -62,11 +41,7 @@ def run_agent_message(user_id, user_message):
     # Extract assistant reply
     reply = result["messages"][-1]["content"]
 
-    # Save updated history
-    updated_history = prior_messages + [
-        {"role": "user", "content": user_message},
-        {"role": "assistant", "content": reply},
-    ]
-    history_store.save_history(user_id, updated_history)
+    history_store.save_message(session_id, "user", user_message)
+    history_store.save_message(session_id, "assistant", reply)
 
     return reply

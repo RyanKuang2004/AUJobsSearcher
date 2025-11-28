@@ -5,13 +5,13 @@ from .base_database import BaseDatabase
 class ConversationDatabase(BaseDatabase):
     """Database class for managing conversation history in Supabase."""
     
-    def add_message(self, session_id: str, message_type: str, message: str) -> Dict[str, Any]:
+    def save_message(self, session_id: str, message_type: str, message: str) -> Dict[str, Any]:
         """
         Add a message to the conversations table.
         
         Args:
             session_id: The unique identifier for the conversation session
-            message_type: Type of message ('human' or 'ai')
+            message_type: Type of message ('user' or 'assistant')
             message: The message content
             
         Returns:
@@ -26,7 +26,7 @@ class ConversationDatabase(BaseDatabase):
         response = self.supabase.table("conversations").insert(insert_payload).execute()
         return response.data[0] if response.data else {}
     
-    def get_messages(self, session_id: str, limit: int = 100) -> List[Dict[str, Any]]:
+    def get_messages(self, session_id: str, limit: int = 20) -> List[Dict[str, Any]]:
         """
         Retrieve all messages for a given session.
         

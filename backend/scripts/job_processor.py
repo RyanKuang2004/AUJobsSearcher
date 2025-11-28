@@ -2,7 +2,7 @@ import logging
 import time
 from db import JobDatabase
 from analyzers.job_analyzer import JobAnalyzer
-from config import PROCESSOR_SETTINGS
+from config import settings
 
 # Configure logging
 logging.basicConfig(
@@ -14,12 +14,12 @@ logger = logging.getLogger("JobProcessor")
 import asyncio
 
 def process_jobs(batch_size: int = None):
-    bs = batch_size if batch_size else PROCESSOR_SETTINGS['batch_size']
+    bs = batch_size if batch_size else settings.processor.batch_size
     asyncio.run(process_jobs_async(bs))
 
 async def process_jobs_async(batch_size: int):
     db = JobDatabase()
-    analyzer = JobAnalyzer(model_name=PROCESSOR_SETTINGS['model'])
+    analyzer = JobAnalyzer(model_name=settings.models.job_analyzer_model)
     
     logger.info(f"Starting Job Processor (Batch Size: {batch_size})...")
     logger.info("Connecting to database...")

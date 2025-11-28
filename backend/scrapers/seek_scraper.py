@@ -6,19 +6,19 @@ from bs4 import BeautifulSoup
 from scrapers.base_scraper import BaseScraper
 from datetime import datetime
 
-from config import SEARCH_TERMS, SCRAPER_SETTINGS
+from config import settings
 
 class SeekScraper(BaseScraper):
     def __init__(self):
         super().__init__("seek")
         self.base_url = "https://www.seek.com.au"
 
-    async def scrape(self, page_limit: int = None, search_terms: list = None, initial_run: bool = False):
+    async def scrape(self, initial_run: bool = False):
         self.logger.info("Starting Seek Scraper...")
         
-        terms = search_terms if search_terms else SEARCH_TERMS
-        limit = page_limit if page_limit else SCRAPER_SETTINGS['page_limit']
-        days_ago = SCRAPER_SETTINGS['initial_days_ago'] if initial_run else SCRAPER_SETTINGS['days_ago']
+        terms = settings.scraper.search_keywords
+        limit = settings.scraper.max_pages
+        days_ago = settings.scraper.initial_days_from_posted if initial_run else settings.scraper.days_from_posted
         
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=True)

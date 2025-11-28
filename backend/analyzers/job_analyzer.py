@@ -7,24 +7,25 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.exceptions import OutputParserException
+from config import settings
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("JobAnalyzer")
 
 class JobAnalyzer:
-    def __init__(self, model_name: Optional[str] = None):
-        self.llm = self._initialize_llm(model_name)
+    def __init__(self):
+        self.llm = self._initialize_llm()
         self.parser = JsonOutputParser()
         self.prompt = self._create_prompt()
 
-    def _initialize_llm(self, model_name: Optional[str]):
+    def _initialize_llm(self):
         api_key = os.environ.get("OPENAI_API_KEY")
         if not api_key:
             logger.warning("OPENAI_API_KEY not found. OpenAI model may fail.")
         return ChatOpenAI(
-            model=model_name or "gpt-5-nano",
-            temperature=1,
+            model=settings.models.job_analyzer_model,
+            temperature=settings.models.job_analyzer_temperature,
             api_key=api_key
         )
 
