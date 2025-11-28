@@ -1,22 +1,9 @@
-import os
 from typing import Dict, Any, List, Optional
-from supabase import create_client, Client
 from datetime import datetime, timedelta
-from dotenv import load_dotenv
+from .base_database import BaseDatabase
 
-# Load environment variables
-load_dotenv()
 
-class JobDatabase:
-    def __init__(self):
-        url: str = os.environ.get("SUPABASE_URL")
-        key: str = os.environ.get("SUPABASE_KEY")
-        
-        if not url or not key:
-            raise ValueError("SUPABASE_URL and SUPABASE_KEY must be set in the .env file")
-            
-        self.supabase: Client = create_client(url, key)
-
+class JobDatabase(BaseDatabase):
     @staticmethod
     def _generate_fingerprint(company: str, title: str) -> str:
         """Generates a simple fingerprint for deduplication."""
@@ -179,12 +166,3 @@ class JobDatabase:
         # ).execute()
         # return response.data
         pass
-
-if __name__ == "__main__":
-    # Simple test to check connection (will fail if env vars are not set)
-    try:
-        db = JobDatabase()
-        print("Successfully connected to Supabase!")
-    except Exception as e:
-        print(f"Connection check failed: {e}")
-        print("Please ensure you have set up your .env file with SUPABASE_URL and SUPABASE_KEY.")

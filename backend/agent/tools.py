@@ -4,22 +4,12 @@ This module provides utilities for interacting with the Supabase database,
 allowing the execution of Python code to query job postings.
 """
 
-import os
-from dotenv import load_dotenv
 from supabase import create_client, Client
 from langchain_core.tools import tool
+from db import BaseDatabase
 
-load_dotenv()
-
-def get_supabase_client() -> Client:
-    """Get the Supabase client, initializing it if necessary."""
-    url: str = os.environ.get("SUPABASE_URL")
-    key: str = os.environ.get("SUPABASE_KEY")
-    if not url or not key:
-        raise ValueError("SUPABASE_URL and SUPABASE_KEY must be set in the .env file")
-    return create_client(url, key)
-
-supabase_client = get_supabase_client()
+_db_instance = BaseDatabase()
+supabase_client = _db_instance.supabase
 
 @tool(parse_docstring=True)
 def execute_supabase_code(

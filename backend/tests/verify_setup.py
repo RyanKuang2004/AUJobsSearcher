@@ -1,5 +1,5 @@
 import uuid
-from db.database import JobDatabase
+from db import JobDatabase
 
 def verify_setup():
     print("--- Verifying Database Setup ---")

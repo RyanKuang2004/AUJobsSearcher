@@ -1,6 +1,6 @@
 import logging
 import time
-from db.database import JobDatabase
+from db import JobDatabase
 from analyzers.job_analyzer import JobAnalyzer
 from config import PROCESSOR_SETTINGS
 

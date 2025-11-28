@@ -8,6 +8,7 @@ load_dotenv()
 
 model = ChatOpenAI(model="gpt-5-nano", temperature=0)
 
+
 supabase_query_agent = {
     "name": "supabase-query-agent",
     "description": "Agent capable of querying the Supabase database for job postings.",

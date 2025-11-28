@@ -1,6 +1,6 @@
 import logging
 from typing import List, Dict, Any, Optional
-from db.database import JobDatabase
+from db import JobDatabase
 
 # Configure logging
 logging.basicConfig(

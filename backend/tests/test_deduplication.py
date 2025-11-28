@@ -1,4 +1,4 @@
-from db.database import JobDatabase
+from db import JobDatabase
 import time
 
 def test_deduplication():
